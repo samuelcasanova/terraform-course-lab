@@ -1,0 +1,29 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override files you do wish to add to version control using wildcard pattern
+# !example_override.tf
+
+# Include plugin cache directories
+.terraform.lock.hcl
+
+# Local environment files
+.env
+.env.local
+
+# Docker
+.docker/
