@@ -1,0 +1,2 @@
+Instructions for the moment:
+ssh-keygen -t ed25519 -f .ssh/terraform-lab -N ""
