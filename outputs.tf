@@ -24,7 +24,12 @@ output "dynamodb_sessions_table_name" {
 }
 
 output "cognito_domain" {
-  description = "The Cognito User Pool Domain"
+  description = "The Cognito User Pool Domain prefix"
   value       = aws_cognito_user_pool_domain.main.domain
+}
+
+output "cognito_domain_url" {
+  description = "The full URL of the Cognito User Pool Domain"
+  value       = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${var.aws_region}.amazoncognito.com"
 }
 

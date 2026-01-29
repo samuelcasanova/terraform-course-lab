@@ -36,9 +36,38 @@ resource "aws_cognito_user_pool" "users" {
   }
 }
 
+resource "aws_cognito_identity_provider" "google" {
+  user_pool_id  = aws_cognito_user_pool.users.id
+  provider_name = "Google"
+  provider_type = "Google"
+
+  provider_details = {
+    authorize_scopes = "email openid profile"
+    client_id        = var.google_client_id
+    client_secret    = var.google_client_secret
+  }
+
+  attribute_mapping = {
+    email    = "email"
+    username = "sub"
+    name     = "name"
+    picture  = "picture"
+  }
+}
+
+
 resource "aws_cognito_user_pool_client" "client" {
   name         = "${var.project_name}-client"
   user_pool_id = aws_cognito_user_pool.users.id
+
+  supported_identity_providers = ["COGNITO", "Google"]
+
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+
+  callback_urls = var.callback_urls
+  logout_urls   = var.logout_urls
 
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
@@ -82,11 +111,7 @@ resource "aws_dynamodb_table" "sessions" {
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
-  domain       = "tf-course-lab-${random_id.cognito_domain.hex}"
+  domain       = var.cognito_domain
   user_pool_id = aws_cognito_user_pool.users.id
-}
-
-resource "random_id" "cognito_domain" {
-  byte_length = 4
 }
 

@@ -1,2 +1,13 @@
 Instructions for the moment:
 ssh-keygen -t ed25519 -f .ssh/terraform-lab -N ""
+
+To create the backend:
+docker compose run --rm terraform -c "terraform init"
+docker compose run --rm terraform -c "terraform plan"
+docker compose run --rm terraform -c "terraform apply"
+
+To generate the config file for the backend:
+docker compose run --rm terraform -c "terraform output -json"
+
+To destroy the backend:
+docker compose run --rm terraform -c "terraform destroy"

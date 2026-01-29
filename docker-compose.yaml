@@ -3,9 +3,8 @@ services:
     build: .
     volumes:
       - .:/workspace
+    env_file: .env
     environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - AWS_DEFAULT_REGION=eu-west-3
     stdin_open: true
     tty: true
