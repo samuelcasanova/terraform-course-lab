@@ -98,10 +98,10 @@ resource "aws_dynamodb_table" "sessions" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
-  hash_key       = "id"
+  hash_key       = "token"
 
   attribute {
-    name = "id"
+    name = "token"
     type = "S"
   }
 
