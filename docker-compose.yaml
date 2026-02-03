@@ -6,5 +6,7 @@ services:
     env_file: .env
     environment:
       - AWS_DEFAULT_REGION=eu-west-3
+      - TF_VAR_aws_access_key=${AWS_ACCESS_KEY_ID}
+      - TF_VAR_aws_secret_key=${AWS_SECRET_ACCESS_KEY}
     stdin_open: true
     tty: true

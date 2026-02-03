@@ -33,3 +33,15 @@ output "cognito_domain_url" {
   value       = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${var.aws_region}.amazoncognito.com"
 }
 
+output "aws_access_key" {
+  description = "AWS Access Key"
+  value       = var.aws_access_key
+  sensitive   = true
+}
+
+output "aws_secret_key" {
+  description = "AWS Secret Key"
+  value       = var.aws_secret_key
+  sensitive   = true
+}
+

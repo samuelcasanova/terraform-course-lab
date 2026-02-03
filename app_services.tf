@@ -81,10 +81,10 @@ resource "aws_dynamodb_table" "users" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
-  hash_key       = "userId"
+  hash_key       = "id"
 
   attribute {
-    name = "userId"
+    name = "id"
     type = "S"
   }
 
@@ -98,10 +98,10 @@ resource "aws_dynamodb_table" "sessions" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
-  hash_key       = "sessionId"
+  hash_key       = "id"
 
   attribute {
-    name = "sessionId"
+    name = "id"
     type = "S"
   }
 
