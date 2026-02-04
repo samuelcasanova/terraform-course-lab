@@ -2,7 +2,8 @@ services:
   terraform:
     build: .
     volumes:
-      - .:/workspace
+      - ..:/projects
+    working_dir: /projects/terraform-course-lab
     env_file: .env
     environment:
       - AWS_DEFAULT_REGION=eu-west-3

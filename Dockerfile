@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     bash
 
 # Set the working directory
-WORKDIR /workspace
+WORKDIR /projects/terraform-course-lab
 
 # Default command
 ENTRYPOINT ["/bin/bash"]
