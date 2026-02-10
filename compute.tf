@@ -44,6 +44,12 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
+# Generate a static token for Kubernetes API access
+resource "random_password" "k8s_token" {
+  length  = 32
+  special = false
+}
+
 # EC2 Instance
 resource "aws_instance" "k3s_node" {
   ami                    = data.aws_ami.ubuntu.id
@@ -56,21 +62,33 @@ resource "aws_instance" "k3s_node" {
   # Allow replacement when user_data changes
   user_data_replace_on_change = true
 
-  # k3s installation via user_data with optimizations for Free Tier
+  # k3s installation via user_data with static token injection
   user_data = <<-EOF
               #!/bin/bash
-              # Create Swap file to handle low RAM (t3.micro)
+              # Create Swap file
               fallocate -l 2G /swapfile
               chmod 600 /swapfile
               mkswap /swapfile
               swapon /swapfile
               echo '/swapfile none swap sw 0 0' >> /etc/fstab
 
-              # Install k3s with optimizations (disable metrics-server to save RAM)
-              curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable metrics-server" sh -
+              # Create K3s config directory
+              mkdir -p /var/lib/rancher/k3s/server/
+
+              # Create static token file for API authentication
+              # Format: token,user,uid,"group1,group2"
+              echo "${random_password.k8s_token.result},admin,admin,\"system:masters\"" > /var/lib/rancher/k3s/server/static-tokens.csv
+
+              # Fetch own public IP from IMDSv2
+              TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+              PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4)
+
+              # Install k3s with the static token file flag and the dynamically fetched IP for TLS
+              curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable metrics-server --kube-apiserver-arg=token-auth-file=/var/lib/rancher/k3s/server/static-tokens.csv --tls-san=$PUBLIC_IP" sh -
               EOF
 
   tags = {
     Name = "${var.project_name}-k3s-node"
   }
 }
+

@@ -55,3 +55,9 @@ output "ec2_public_ip" {
   value       = aws_instance.k3s_node.public_ip
 }
 
+output "portal_url" {
+  description = "The URL to access the portal"
+  value       = "http://${aws_lb.main.dns_name}"
+}
+
+
