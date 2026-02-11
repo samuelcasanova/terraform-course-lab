@@ -24,6 +24,7 @@ resource "kubernetes_config_map" "app_config" {
     SQS_QUEUE_URL              = aws_sqs_queue.event_bus.id
     ALB_DNS_NAME               = aws_lb.main.dns_name
     EC2_PUBLIC_IP              = aws_instance.k3s_node.public_ip
+    API_PORT                   = "8080"
   }
 }
 
@@ -158,7 +159,7 @@ resource "kubernetes_service" "portal" {
     }
     port {
       port        = 80
-      target_port = 3000
+      target_port = 80
     }
   }
 }

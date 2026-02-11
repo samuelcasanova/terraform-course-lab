@@ -84,7 +84,7 @@ resource "aws_instance" "k3s_node" {
               PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4)
 
               # Install k3s with the static token file flag and the dynamically fetched IP for TLS
-              curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable metrics-server --kube-apiserver-arg=token-auth-file=/var/lib/rancher/k3s/server/static-tokens.csv --tls-san=$PUBLIC_IP" sh -
+              curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable metrics-server --disable local-storage --kube-apiserver-arg=token-auth-file=/var/lib/rancher/k3s/server/static-tokens.csv --tls-san=$PUBLIC_IP" sh -
               EOF
 
   tags = {

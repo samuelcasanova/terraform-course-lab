@@ -28,5 +28,6 @@ provider "kubernetes" {
   
   token    = random_password.k8s_token.result
   insecure = true
+  config_path = "/dev/null"
 }
 
