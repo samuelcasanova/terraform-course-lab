@@ -15,7 +15,7 @@ COGNITO_USER_POOL_ID="${aws_cognito_user_pool.users.id}"
 DYNAMODB_SESSIONS_TABLE_NAME="${aws_dynamodb_table.sessions.name}"
 DYNAMODB_USERS_TABLE_NAME="${aws_dynamodb_table.users.name}"
 SQS_QUEUE_URL="${aws_sqs_queue.event_bus.id}"
-ALB_DNS_NAME="${aws_lb.main.dns_name}"
+ALB_DNS_NAME="${aws_instance.k3s_node.public_ip}"
 EC2_PUBLIC_IP="${aws_instance.k3s_node.public_ip}"
 EOT
 

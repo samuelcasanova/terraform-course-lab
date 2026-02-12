@@ -66,8 +66,14 @@ resource "aws_cognito_user_pool_client" "client" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
 
-  callback_urls = var.callback_urls
-  logout_urls   = var.logout_urls
+  callback_urls = [
+    "http://localhost:3000/oauth_callback",
+    "http://${aws_instance.k3s_node.public_ip}/oauth_callback"
+  ]
+  logout_urls = [
+    "http://localhost:3000/",
+    "http://${aws_instance.k3s_node.public_ip}/"
+  ]
 
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
@@ -78,9 +84,7 @@ resource "aws_cognito_user_pool_client" "client" {
 
 resource "aws_dynamodb_table" "users" {
   name           = "${var.project_name}-users"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 5
-  write_capacity = 5
+  billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
 
   attribute {
@@ -95,9 +99,7 @@ resource "aws_dynamodb_table" "users" {
 
 resource "aws_dynamodb_table" "sessions" {
   name           = "${var.project_name}-sessions"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 5
-  write_capacity = 5
+  billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "token"
 
   attribute {

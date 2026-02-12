@@ -45,10 +45,7 @@ output "aws_secret_key" {
   sensitive   = true
 }
 
-output "alb_dns_name" {
-  description = "The DNS name of the load balancer"
-  value       = aws_lb.main.dns_name
-}
+
 
 output "ec2_public_ip" {
   description = "The public IP of the EC2 instance"
@@ -57,7 +54,26 @@ output "ec2_public_ip" {
 
 output "portal_url" {
   description = "The URL to access the portal"
-  value       = "http://${aws_lb.main.dns_name}"
+  value       = "http://${aws_instance.k3s_node.public_ip}"
+}
+output "k8s_token" {
+  description = "The token for k3s"
+  value       = random_password.k8s_token.result
+  sensitive   = true
+}
+
+output "aws_region" {
+  value = var.aws_region
+}
+
+output "aws_access_key_value" {
+  value     = var.aws_access_key
+  sensitive = true
+}
+
+output "aws_secret_key_value" {
+  value     = var.aws_secret_key
+  sensitive = true
 }
 
 

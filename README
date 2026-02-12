@@ -1,13 +1,37 @@
-Instructions for the moment:
+# Terraform AWS & K3s Lab (Separated)
+
+The project is split into two parts to avoid state dependency hell:
+1. **Infra**: AWS Resources (VPC, EC2, S3, RDS, Cognito)
+2. **Apps**: Kubernetes Resources (Deployments, Services, Ingress)
+
+## Prerequisites
 ssh-keygen -t ed25519 -f .ssh/terraform-lab -N ""
 
-To create the infra:
-docker compose run --rm terraform -c "terraform init"
-docker compose run --rm terraform -c "terraform plan"
-docker compose run --rm terraform -c "terraform apply"
-docker compose run --rm terraform -c "TF_VAR_k8s_enabled=true terraform apply"
+## Step 1: Provision AWS Infrastructure
+```bash
+# Init and Apply Infra
+docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform init"
+docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform apply"
+```
 
-To destroy the infra:
-docker compose run --rm terraform -c "TF_VAR_k8s_enabled=true terraform destroy"
-docker compose run --rm terraform -c "terraform destroy"
-docker compose run --rm terraform -c "terraform destroy -refresh=false"
+## Step 2: Provision Kubernetes Resources
+Once the EC2 is up and K3s is running:
+```bash
+# Init and Apply Apps
+docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform init"
+docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform apply"
+```
+
+## Maintenance
+- To update AWS settings, work in `infra/`.
+- To update K8s settings, work in `apps/`.
+- No more "Connection Refused" errors when updating AWS!
+
+## Clean up
+```bash
+# Destroy Apps first
+docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform destroy"
+
+# Then Destroy Infra
+docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform destroy"
+```

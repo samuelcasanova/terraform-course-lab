@@ -58,9 +58,5 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "k8s_enabled" {
-  description = "Set to true only AFTER the EC2 instance is created (Step 2)"
-  type        = bool
-  default     = false
-}
+
 
