@@ -68,11 +68,11 @@ resource "aws_cognito_user_pool_client" "client" {
 
   callback_urls = [
     "http://localhost:3000/oauth_callback",
-    "http://${aws_instance.k3s_node.public_ip}/oauth_callback"
+    "https://${aws_lb.main.dns_name}/oauth_callback"
   ]
   logout_urls = [
     "http://localhost:3000/",
-    "http://${aws_instance.k3s_node.public_ip}/"
+    "https://${aws_lb.main.dns_name}/"
   ]
 
   explicit_auth_flows = [

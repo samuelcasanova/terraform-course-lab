@@ -21,6 +21,15 @@ resource "kubernetes_config_map" "app_config" {
     DYNAMODB_USERS_TABLE_NAME   = data.terraform_remote_state.infra.outputs.dynamodb_users_table_name
     SQS_QUEUE_URL              = data.terraform_remote_state.infra.outputs.sqs_queue_url
     EC2_PUBLIC_IP              = data.terraform_remote_state.infra.outputs.ec2_public_ip
+    ALB_DNS_NAME               = data.terraform_remote_state.infra.outputs.alb_dns_name
+    APP_URL                    = "https://${data.terraform_remote_state.infra.outputs.alb_dns_name}"
+    BASE_URL                   = "https://${data.terraform_remote_state.infra.outputs.alb_dns_name}"
+    OAUTH_REDIRECT_URI         = "https://${data.terraform_remote_state.infra.outputs.alb_dns_name}/oauth_callback"
+    OAUTH_SCOPE                = "openid profile email"
+    OAUTH_STATE                = "google"
+    OAUTH_CLIENT_ID            = data.terraform_remote_state.infra.outputs.cognito_user_pool_client_id
+    OAUTH_LOGIN_SERVICE_URL    = "https://${data.terraform_remote_state.infra.outputs.cognito_domain}.auth.${data.terraform_remote_state.infra.outputs.aws_region}.amazoncognito.com/oauth2/authorize"
+    OAUTH_TOKEN_SERVICE_URL    = "https://${data.terraform_remote_state.infra.outputs.cognito_domain}.auth.${data.terraform_remote_state.infra.outputs.aws_region}.amazoncognito.com/oauth2/token"
     API_PORT                   = "8080"
   }
 }
@@ -131,7 +140,17 @@ resource "kubernetes_deployment" "portal" {
           }
           env {
             name  = "PROXY_TARGET"
-            value = "http://backend:8080" # Service discovery in K8s
+            value = "http://backend:8080"
+          }
+          env_from {
+            config_map_ref {
+              name = kubernetes_config_map.app_config.metadata[0].name
+            }
+          }
+          env_from {
+            secret_ref {
+              name = kubernetes_secret.aws_credentials.metadata[0].name
+            }
           }
         }
       }

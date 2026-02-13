@@ -31,3 +31,5 @@ override.tf.json
 # SSH
 .ssh
 
+# Terraform env
+apps/terraform.env

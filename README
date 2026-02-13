@@ -11,7 +11,7 @@ ssh-keygen -t ed25519 -f .ssh/terraform-lab -N ""
 ```bash
 # Init and Apply Infra
 docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform init"
-docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform apply"
+docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform apply -auto-approve"
 ```
 
 ## Step 2: Provision Kubernetes Resources
@@ -19,7 +19,7 @@ Once the EC2 is up and K3s is running:
 ```bash
 # Init and Apply Apps
 docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform init"
-docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform apply"
+docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform apply -auto-approve"
 ```
 
 ## Maintenance
