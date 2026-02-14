@@ -52,6 +52,11 @@ output "ec2_public_ip" {
   value       = aws_instance.k3s_node.public_ip
 }
 
+output "ssh_command" {
+  description = "SSH command to connect to the EC2 instance"
+  value       = "ssh -i .ssh/terraform-lab ubuntu@${aws_instance.k3s_node.public_ip}"
+}
+
 output "alb_dns_name" {
   description = "The DNS name of the Application Load Balancer"
   value       = aws_lb.main.dns_name

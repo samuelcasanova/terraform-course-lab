@@ -22,6 +22,22 @@ docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "ter
 docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform apply -auto-approve"
 ```
 
+## Connect to the portal public address
+Once everything is provisioned, you can visit the portal by using the public address exposed in the "portal_url" infra output variable.
+
+## Connect to EC2 and Kubernetes
+```bash
+ssh -i .ssh/terraform-lab ubuntu@[EC2 public IP] <-- This exact instruction is available in the infra output variable ssh_command
+sudo kubectl config set-context --current --namespace=rateacharacter
+```
+
+## Trigger the Lambda function with the weekly activity
+After some activity in the web, you can generate an activity report. It's a weekly report, but you can trigger it manually by:
+```bash
+docker compose run --rm terraform -c "aws lambda invoke --function-name terraform-aws-lab-reporter --region eu-west-3 response.json"
+```
+The report will be places in the terraform-aws-lab-assets-xxxxxxx bucket, with a /reports preffix.
+
 ## Maintenance
 - To update AWS settings, work in `infra/`.
 - To update K8s settings, work in `apps/`.
@@ -30,8 +46,8 @@ docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "ter
 ## Clean up
 ```bash
 # Destroy Apps first
-docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform destroy"
+docker compose run --rm -w /projects/terraform-course-lab/apps terraform -c "terraform destroy -auto-approve"
 
 # Then Destroy Infra
-docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform destroy"
+docker compose run --rm -w /projects/terraform-course-lab/infra terraform -c "terraform destroy -auto-approve"
 ```
