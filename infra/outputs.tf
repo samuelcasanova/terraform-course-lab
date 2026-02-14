@@ -66,6 +66,11 @@ output "portal_url" {
   description = "The URL to access the portal"
   value       = "https://${aws_lb.main.dns_name}"
 }
+
+output "unified_dashboard_url" {
+  description = "URL for the unified CloudWatch monitoring dashboard"
+  value       = "https://${var.aws_region}.console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.main.dashboard_name}"
+}
 output "k8s_token" {
   description = "The token for k3s"
   value       = random_password.k8s_token.result
